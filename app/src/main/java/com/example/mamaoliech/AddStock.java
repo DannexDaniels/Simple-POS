@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -19,7 +18,7 @@ public class AddStock extends AppCompatActivity {
     private AutoCompleteTextView category;
     private MaterialButton button;
 
-    private DatabaseTable.AppDatabase db;
+    private MyDatabase.AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,20 +45,8 @@ public class AddStock extends AppCompatActivity {
 
         //create database
         db = Room.databaseBuilder(getApplicationContext(),
-                DatabaseTable.AppDatabase.class, "database-name").allowMainThreadQueries().build();
+                MyDatabase.AppDatabase.class, "database-name").allowMainThreadQueries().build();
 
-
-
-        for ( DatabaseTable.Product product : db.productDao().getAll()){
-
-            Log.e("DATABASE", "onCreate: "+ ( product.product_name));
-            Log.e("DATABASE", "onCreate: "+ ( product.category));
-            Log.e("DATABASE", "onCreate: "+ ( product.stock_level));
-            Log.e("DATABASE", "onCreate: "+ ( product.bp));
-            Log.e("DATABASE", "onCreate: "+ ( product.sp));
-
-
-        }
 
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -72,7 +59,7 @@ public class AddStock extends AppCompatActivity {
     }
 
     private void saveProduct(String name, String category, int quantty, int bp, int sp){
-        DatabaseTable.Product product = new DatabaseTable.Product(name, category, quantty, bp, sp);
+        MyDatabase.Product product = new MyDatabase.Product(name, category, quantty, bp, sp);
 
         db.productDao().insertProduct(product);
         Toast.makeText(getApplicationContext(),"Product added successfully",Toast.LENGTH_LONG).show();

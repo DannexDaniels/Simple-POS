@@ -17,7 +17,7 @@ public class DisplayStock extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    private DatabaseTable.AppDatabase db;
+    private MyDatabase.AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,15 +36,15 @@ public class DisplayStock extends AppCompatActivity {
 
         //create database
         db = Room.databaseBuilder(getApplicationContext(),
-                DatabaseTable.AppDatabase.class, "database-name").allowMainThreadQueries().build();
+                MyDatabase.AppDatabase.class, "database-name").allowMainThreadQueries().build();
 
-        List<DatabaseTable.Product> products = Arrays.asList(db.productDao().getAll());
+        MyDatabase.Product [] products = db.productDao().getAll();
+
 
         Log.e("DATABASE", "onCreate: "+ (db.productDao().getAll().toString()));
 
         // specify an adapter (see also next example)
-      /*  mAdapter = new ProductAdapter(products);
+        mAdapter = new ProductAdapter(products);
         recyclerView.setAdapter(mAdapter);
-*/
     }
 }

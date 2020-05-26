@@ -13,8 +13,9 @@ import com.google.android.material.card.MaterialCardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SalesAdapter extends RecyclerView.Adapter<SalesAdapter.MyViewHolder> {
-    private DatabaseTable.ProductsSold[] productsSold;
+    private MyDatabase.ProductsSold[] productsSold;
 
+    private int dataSize = 0;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -32,7 +33,7 @@ public class SalesAdapter extends RecyclerView.Adapter<SalesAdapter.MyViewHolder
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    protected SalesAdapter(DatabaseTable.ProductsSold[] myDataset) {
+    protected SalesAdapter(MyDatabase.ProductsSold[] myDataset) {
         productsSold = myDataset;
     }
 
@@ -55,9 +56,10 @@ public class SalesAdapter extends RecyclerView.Adapter<SalesAdapter.MyViewHolder
         // - replace the contents of the view with that element
         if (productsSold[position].sales.size() != 0){
             int price = productsSold[position].sales.get(0).quantity_sold * productsSold[position].product.sp;
-            holder.product.setText(productsSold[position].product.product_name);
+            holder.product.setText(productsSold[position].sales.get(0).product_sold);
             holder.quantity.setText(String.valueOf(productsSold[position].sales.get(0).quantity_sold));
             holder.price.setText("Sh. "+String.valueOf(price));
+            dataSize++;
             Log.e("LOOGING", "onCreate: "+ productsSold[position] );
         }
 

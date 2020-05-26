@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private LinearLayout fabMenu, addStock, addSale, addBreakage;
 
-    private DatabaseTable.AppDatabase db;
+    private MyDatabase.AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         //create database
         db = Room.databaseBuilder(getApplicationContext(),
-                DatabaseTable.AppDatabase.class, "database-name").allowMainThreadQueries().build();
+                MyDatabase.AppDatabase.class, "database-name").allowMainThreadQueries().build();
 
 
         String[] categories = {"BEER","VODKA","BRANDY","GLEN","SOFT DRINKS", "FOOD"};
@@ -69,16 +68,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
-                System.err.println("trial error: "+ db.productDao().getProductsSold().length);
-                for ( DatabaseTable.ProductsSold product : db.productDao().getProductsSold()){
+                System.out.println("Products Sold:"+db.productDao().getProductsSold().length);
+                MyDatabase.ProductsSold productsSold[] = db.productDao().getProductsSold();
 
-                    Log.e("DATABASE", "onCreate: "+ ( product.product.product_name));
-                    Log.e("DATABASE", "onCreate: "+ ( product.product.sp));
-                    Log.e("DATABASE", "onCreate: "+ ( product.product.category));
-                    Log.e("DATABASE", "onCreate: "+ ( product.product.stock_level));
-                    Log.e("DATABASE", "onCreate: "+ ( product.sales.get(0).quantity_sold));
-                    Log.e("DATABASE", "onCreate: "+ ( product.sales.get(0).product_sold));
-                    Log.e("DATABASE", "onCreate: "+ ( product.sales.get(0).date_sold));
+                for(MyDatabase.ProductsSold product: productsSold){
+                    System.out.println("The one sold is " +product.product.product_name);
+                    System.out.println("The selling price is " +product.product.sp);
+                    System.out.println("The remaining Stock is "+product.product.stock_level);
+                    if (product.sales.size() != 0){
+                        System.out.println("The date sold is " +product.sales.get(0).date_sold);
+                        System.out.println("The quantity sold is" +product.sales.get(0).quantity_sold);
+                        System.out.println("the one sold is "+product.sales.get(0).product_sold);
+                    }
                 }
                 clicks[0]++;
                 if (clicks[0] % 2 == 0)
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addBreakage(View view){
-        startActivity(new Intent(getApplicationContext(), AddBreakage.class));
+        startActivity(new Intent(getApplicationContext(), DisplayStock.class));
     }
 
 

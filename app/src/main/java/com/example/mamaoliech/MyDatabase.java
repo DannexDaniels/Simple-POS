@@ -8,16 +8,18 @@ import androidx.room.Database;
 import androidx.room.Delete;
 import androidx.room.Embedded;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.Insert;
 import androidx.room.PrimaryKey;
 import androidx.room.Query;
 import androidx.room.Relation;
 import androidx.room.RoomDatabase;
 import androidx.room.Transaction;
+import androidx.room.Update;
 
 import java.util.List;
 
-public class DatabaseTable {
+public class MyDatabase {
     //Defining tables/entities
 
     @Entity
@@ -37,12 +39,20 @@ public class DatabaseTable {
         @ColumnInfo(name = "s_p")
         public int sp;
 
+        //for adding a product
         public Product (String product_name, String category, int stock_level, int bp, int sp){
             this.product_name = product_name;
             this.category = category;
             this.stock_level = stock_level;
             this.bp = bp;
             this.sp = sp;
+        }
+
+        //for updating stock level
+        @Ignore
+        public Product(String product_name, int stock_level){
+            this.product_name = product_name;
+            this.stock_level = stock_level;
         }
     }
 
@@ -115,8 +125,14 @@ public class DatabaseTable {
         @Query("SELECT * FROM Product")
         Product[]  getAll();
 
+        @Query("SELECT * FROM Product WHERE product_name = :product")
+        Product  getProduct(String product);
+
         @Query("SELECT * FROM Sale")
         Sale[] getAllSales();
+
+        @Query("SELECT * FROM Product WHERE product_name LIKE '%' || :search  || '%' LIMIT 4")
+        Product[] findProduct(String search);
 
         /*@Query("SELECT * FROM Product WHERE category IN (category)")
         List<Product> loadAllByCategory(String category);
@@ -127,11 +143,11 @@ public class DatabaseTable {
         //retrieving from relationship...
 
         @Transaction
-        @Query("Select * FROM Product")
+        @Query("Select * FROM Sale CROSS JOIN Product WHERE Product.product_name=Sale.product_sold")
         ProductsSold[] getProductsSold();
 
         @Transaction
-        @Query("SELECT * FROM Product")
+        @Query("SELECT * FROM Product CROSS JOIN Breakage WHERE Product.product_name=Breakage.product_broken")
         ProductsBroken[] getProductsBroken();
 
         @Insert
@@ -143,12 +159,15 @@ public class DatabaseTable {
         @Insert
         void insertBreakage(Breakage... Breakages);
 
+        @Update
+        public void updateUsers(Product... products);
+
 
         @Delete
         void delete(Product Product);
     }
 
-    @Database(entities = {Product.class, Sale.class, Breakage.class}, version = 1)
+    @androidx.room.Database(entities = {Product.class, Sale.class, Breakage.class}, version = 1)
     public static abstract class AppDatabase extends RoomDatabase{
         public abstract ProductDao productDao();
     }
