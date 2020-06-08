@@ -105,6 +105,14 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), DisplayStock.class));
     }
 
+    public void addExpenses(View view){
+        startActivity(new Intent(getApplicationContext(), AddExpenses.class));
+    }
+
+    public void showExpenses(View view){
+        startActivity(new Intent(getApplicationContext(), DisplayExpenses.class));
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddBreakage"></activity>
+        <activity android:name=".DisplayExpenses"></activity>
+        <activity android:name=".AddExpenses" />
+        <activity android:name=".AddBreakage" />
         <activity android:name=".AddSale" />
         <activity android:name=".DisplayStock" />
         <activity android:name=".AddStock" />

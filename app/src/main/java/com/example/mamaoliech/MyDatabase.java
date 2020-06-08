@@ -49,11 +49,11 @@ public class MyDatabase {
         }
 
         //for updating stock level
-        @Ignore
+        /*@Ignore
         public Product(String product_name, int stock_level){
             this.product_name = product_name;
             this.stock_level = stock_level;
-        }
+        }*/
     }
 
     @Entity
@@ -98,6 +98,36 @@ public class MyDatabase {
         public String date_broken;
     }
 
+    @Entity
+    public static class Expenses{
+        @PrimaryKey (autoGenerate = true)
+        public int id;
+
+        @ColumnInfo(name = "expense_name")
+        public String expense_name;
+
+        @ColumnInfo(name = "expense_category")
+        public String expense_category;
+
+        @ColumnInfo(name = "expense_quantity")
+        public int expense_quantity;
+
+        @ColumnInfo(name = "expense_cost")
+        public int expense_cost;
+
+        @ColumnInfo(name = "expense_date")
+        public String expense_date;
+
+        public Expenses(String expense_name, String expense_category, int expense_quantity, int expense_cost, String expense_date){
+            this.expense_name = expense_name;
+            this.expense_category = expense_category;
+            this.expense_quantity = expense_quantity;
+            this.expense_cost = expense_cost;
+            this.expense_date = expense_date;
+        }
+
+    }
+
     //creating relationships
 
     public static class ProductsSold {
@@ -120,17 +150,22 @@ public class MyDatabase {
         public List<Breakage> brokens;
     }
 
+    //queries
     @Dao
     public interface ProductDao{
+        //get all products
         @Query("SELECT * FROM Product")
         Product[]  getAll();
 
+        //get specific product
         @Query("SELECT * FROM Product WHERE product_name = :product")
         Product  getProduct(String product);
 
-        @Query("SELECT * FROM Sale")
-        Sale[] getAllSales();
+        //get sales
+        @Query("SELECT * FROM Expenses")
+        Expenses[] getExpenses();
 
+        //search for a product
         @Query("SELECT * FROM Product WHERE product_name LIKE '%' || :search  || '%' LIMIT 4")
         Product[] findProduct(String search);
 
@@ -142,10 +177,12 @@ public class MyDatabase {
 
         //retrieving from relationship...
 
+        //get products sold
         @Transaction
         @Query("Select * FROM Sale CROSS JOIN Product WHERE Product.product_name=Sale.product_sold")
         ProductsSold[] getProductsSold();
 
+        //get products broken
         @Transaction
         @Query("SELECT * FROM Product CROSS JOIN Breakage WHERE Product.product_name=Breakage.product_broken")
         ProductsBroken[] getProductsBroken();
@@ -159,15 +196,18 @@ public class MyDatabase {
         @Insert
         void insertBreakage(Breakage... Breakages);
 
+        @Insert
+        void insertExpense(Expenses... Expenses);
+
         @Update
-        public void updateUsers(Product... products);
+        void updateUsers(Product... products);
 
 
         @Delete
         void delete(Product Product);
     }
 
-    @androidx.room.Database(entities = {Product.class, Sale.class, Breakage.class}, version = 1)
+    @androidx.room.Database(entities = {Product.class, Sale.class, Breakage.class, Expenses.class}, version = 2)
     public static abstract class AppDatabase extends RoomDatabase{
         public abstract ProductDao productDao();
     }

@@ -43,7 +43,7 @@ public class SalesAdapter extends RecyclerView.Adapter<SalesAdapter.MyViewHolder
                                                         int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.my_card, parent, false);
+                .inflate(R.layout.sales_card, parent, false);
 
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
